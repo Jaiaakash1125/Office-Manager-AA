@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
+        cookiesToSet.forEach(({ name, value }) => {
           request.cookies.set(name, value);
         });
         response = NextResponse.next({
@@ -38,16 +38,6 @@ export async function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   const pathname = url.pathname;
-
-  // Allow public routes, api/tracker, api/cron, static files
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api/cron') ||
-    pathname.startsWith('/api/tracker') ||
-    pathname.includes('.')
-  ) {
-    return response;
-  }
 
   // Handle /login
   if (pathname === '/login') {
@@ -101,11 +91,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
+     * Match all request paths EXCEPT:
+     * - api/* (API routes - they handle auth themselves and must return JSON)
      * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - _next/image (image optimization)
+     * - favicon.ico and other static assets
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon\\.ico|.*\\..*).*)',
   ],
 };

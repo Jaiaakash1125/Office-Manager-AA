@@ -68,6 +68,16 @@ export function Navbar({ userName, role, onLogoutClick }: NavbarProps) {
           </div>
         </div>
 
+        <div className="flex-1 flex justify-center sm:justify-start px-8">
+          <button
+            onClick={() => router.push('/vault')}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 rounded-xl font-semibold text-sm transition border border-slate-200 hover:border-indigo-200"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            Password Vault
+          </button>
+        </div>
+
         {/* Live Clock & User Info */}
         <div className="flex items-center space-x-3 sm:space-x-6">
           {/* Live Clock */}
