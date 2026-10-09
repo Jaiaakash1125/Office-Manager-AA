@@ -45,6 +45,9 @@ next-env.d.ts
 __pycache__/
 *.py[cod]
 dist/
+build/
 *.spec
+*.exe
 tracker_config.json
+
 
